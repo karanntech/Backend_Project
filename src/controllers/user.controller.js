@@ -236,6 +236,12 @@ const updateUserAvatar = asyncHandler(async (req, res) => {
         throw new ApiResponse(400, "Avatar file required")
     }
 
+    //Delete the old avatar image on cloudinary /not sure if it is correct
+    if(user.avatar){
+        const oldAvatar = user.avatar.split('/').pop().split('.')[0];
+        await cloudinary.v2.uploader.destroy(oldAvatar)
+    }
+
     const avatar = await uploadOnCloudinary(avatarLocalPath)
 
     if(!avatar.url){
@@ -259,6 +265,12 @@ const updateCoverImage = asyncHandler (async (req, res)=> {
 
     if(!coverImageLocalPath){
         throw new ApiError(400, "Upload Cover image")
+    }
+
+    //Delete the old cover image on cloudinary /not sure if it is correct
+    if(user.coverImage){
+        const oldCoverImage = user.avatar.split('/').pop().split('.')[0];
+        await cloudinary.v2.uploader.destroy(oldCoverImage)
     }
 
     const coverImage = await uploadOnCloudinary(coverImageLocalPath)
